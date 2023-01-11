@@ -8,7 +8,7 @@ public class CharacterMove : MonoBehaviour
     SkeletonAnimation skeletonAnimation;
     public string curAnimation = "Idle";
 
-    SkeletonAnimation target = null;
+    List<AttackableUnit> targets = new List<AttackableUnit>();
     void setAnimation(string name, bool loop = true)
     {
         if (curAnimation != name)
@@ -41,11 +41,12 @@ public class CharacterMove : MonoBehaviour
             setAnimation("Attack", false);
             skeletonAnimation.AnimationState.AddAnimation(0, "Idle", true, 0);
             curAnimation = "Idle";
-            if (target != null)
+            if (targets.Count > 0)
             {
-                target.AnimationState.SetAnimation(0, "Idle", true);
-                target.AnimationState.AddAnimation(0, "Hit", false, 0.2f);
-                target.AnimationState.AddAnimation(0, "Idle", true, 0);
+                foreach(AttackableUnit target in targets)
+                {
+                    target.Attacked();
+                }
             }
          }
         else
@@ -82,13 +83,16 @@ public class CharacterMove : MonoBehaviour
       
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        target = collision.gameObject.GetComponent<SkeletonAnimation>();
+        targets.Add(collision.gameObject.GetComponent<AttackableUnit>());
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        target = null;
+
+        targets.Remove(collision.gameObject.GetComponent<AttackableUnit>());
+        
     }
+
 }
