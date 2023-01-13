@@ -6,8 +6,11 @@ public class Spawner : MonoBehaviour
 {
 
     public GameObject obj;
+    public GameObject attackEffect;
     float timer = 0;
     public float gapSecond = 3;
+    bool stop;
+    List<GameObject> mobs = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -20,13 +23,30 @@ public class Spawner : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if (timer > gapSecond)
+        if (timer > gapSecond && !stop)
         {
             GameObject newObj = Instantiate(obj);
-            newObj.transform.position = new Vector3(Random.Range(0, 5), Random.Range(0, 5), 0);
+            newObj.transform.position = new Vector3(Random.Range(0, 8), Random.Range(-5, 2), 0);
+            newObj.GetComponent<AttackableUnit>().attackedEffect = Instantiate(attackEffect);
+            mobs.Add(newObj);
             timer = 0;
-            Destroy(newObj, 15);
         }
+    }
 
+    public void GameOver()
+    {
+        stop = true;
+        foreach(GameObject mob in mobs)
+        {
+            if (mob)
+            {
+                Destroy(mob);
+            }
+        }
+    }
+
+    public void Restart()
+    {
+        stop = false;
     }
 }
