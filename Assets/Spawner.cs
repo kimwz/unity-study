@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Photon.Pun;
 
 public class Spawner : MonoBehaviour
 {
@@ -9,7 +11,7 @@ public class Spawner : MonoBehaviour
     public GameObject attackEffect;
     float timer = 0;
     public float gapSecond = 3;
-    bool stop;
+    
     List<GameObject> mobs = new List<GameObject>();
 
     // Start is called before the first frame update
@@ -21,32 +23,18 @@ public class Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
         timer += Time.deltaTime;
 
-        if (timer > gapSecond && !stop)
+        if (timer > gapSecond)
         {
-            GameObject newObj = Instantiate(obj);
-            newObj.transform.position = new Vector3(Random.Range(0, 8), Random.Range(-5, 2), 0);
-            newObj.GetComponent<AttackableUnit>().attackedEffect = Instantiate(attackEffect);
+            Vector3 position = new Vector3(Random.Range(0, 8), Random.Range(-5, 2), 0);
+            GameObject newObj = PhotonNetwork.Instantiate("dongle", position, Quaternion.identity, 0);
             mobs.Add(newObj);
             timer = 0;
+        
         }
     }
 
-    public void GameOver()
-    {
-        stop = true;
-        foreach(GameObject mob in mobs)
-        {
-            if (mob)
-            {
-                Destroy(mob);
-            }
-        }
-    }
-
-    public void Restart()
-    {
-        stop = false;
-    }
+   
 }

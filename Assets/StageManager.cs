@@ -16,13 +16,11 @@ public class StageManager : MonoBehaviour
     public void GameOver()
     {
         gameOverCanvas.SetActive(true);
-        spawner.GetComponent<Spawner>().GameOver();
     }
 
     public void Restart()
     {
         gameOverCanvas.SetActive(false);
-        spawner.GetComponent<Spawner>().Restart();
         player.GetComponent<CharacterMove>().Restart();
         Score.score = 0;
 

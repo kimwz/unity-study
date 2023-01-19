@@ -11,7 +11,7 @@ public class CharacterMove : MonoBehaviour, IGetHealthSystem
     public GameObject manaManager;
     public GameObject criticalAttackEffect;
     public GameObject stageManager;
-    
+    public bool main;
     private HealthSystem healthSystem;
     SkeletonAnimation skeletonAnimation;
     public string curAnimation = "Idle";
@@ -22,9 +22,11 @@ public class CharacterMove : MonoBehaviour, IGetHealthSystem
     {
         healthSystem = new HealthSystem(100);
         healthSystem.OnDead += HealthSystem_OnDead;
-        criticalAttackEffect = Instantiate(criticalAttackEffect);
-        criticalAttackEffect.SetActive(false);
-        stageManager.GetComponent<StageManager>().Restart();
+        if (criticalAttackEffect)
+        {
+            criticalAttackEffect = Instantiate(criticalAttackEffect);
+            criticalAttackEffect.SetActive(false);
+        }
     }
 
     List<AttackableUnit> targets = new List<AttackableUnit>();
@@ -61,6 +63,7 @@ public class CharacterMove : MonoBehaviour, IGetHealthSystem
     // Update is called once per frame
     void Update()
     {
+        if (!main) return;
         if (Input.GetKey(KeyCode.Space))
         {
             if (!attacking)
@@ -135,7 +138,6 @@ public class CharacterMove : MonoBehaviour, IGetHealthSystem
         if (criticalAttackEffect != null)
         {
             criticalAttackEffect.transform.position = playerBox.transform.position;
-            //criticalAttackEffect.transform.Translate(-Vector3.down * 7);
             criticalAttackEffect.SetActive(false);
             criticalAttackEffect.SetActive(true);
         }

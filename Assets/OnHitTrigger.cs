@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class OnHitTrigger : MonoBehaviour
 {
-    public GameObject triggerTarget;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        triggerTarget.GetComponent<CharacterMove>().OnHit();
+        //triggerTarget.GetComponent<CharacterMove>().OnHit();
     }
 }
